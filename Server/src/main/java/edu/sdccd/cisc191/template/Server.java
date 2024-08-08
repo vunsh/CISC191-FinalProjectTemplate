@@ -27,9 +27,7 @@ public class Server {
 
         String inputLine;
         while ((inputLine = in.readLine()) != null) {
-            CustomerRequest request = CustomerRequest.fromJSON(inputLine);
-            CustomerResponse response = new CustomerResponse(request.getId(), "Jane", "Doe");
-            out.println(CustomerResponse.toJSON(response));
+
         }
     }
 
@@ -44,6 +42,7 @@ public class Server {
         Server server = new Server();
         try {
             server.start(4444);
+
             server.stop();
         } catch(Exception e) {
             e.printStackTrace();
