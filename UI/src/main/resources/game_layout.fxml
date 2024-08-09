@@ -8,7 +8,7 @@
 <AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="edu.sdccd.cisc191.template.GameController">
     <Button fx:id="startButton" layoutX="20" layoutY="20" text="Start Game" onAction="#startGame"/>
     <Button fx:id="viewCatalogButton" layoutX="20" layoutY="60" text="View Catalog" onAction="#viewCatalog"/>
-    <Button fx:id="musicPlaylistButton" layoutX="20" layoutY="100" text="Music Playlist" onAction="#musicPlaylist"/>
+    <Button fx:id="musicPlaylistButton" layoutX="20" layoutY="90" text="Music Playlist" onAction="#musicPlaylist"/>
     <Label fx:id="scoreLabel" layoutX="100" layoutY="20" text="Score: 0"/>
 
     <!-- Canvases for each track -->
