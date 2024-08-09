@@ -1,55 +1,69 @@
 package edu.sdccd.cisc191.template;
 
-import java.net.*;
-import java.io.*;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.concurrent.TimeUnit;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.Socket;
+
+/**
+ * The {@code Client} class represents a client that connects to a server,
+ * sends requests, and receives responses.
+ */
 public class Client {
-    private Socket clientSocket;
-    private PrintWriter out;
-    private BufferedReader in;
 
-    public void startConnection(String ip, int port) throws IOException {
-        clientSocket = new Socket(ip, port);
-        out = new PrintWriter(clientSocket.getOutputStream(), true);
-        in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+    private Socket socket;
+    private DataInputStream input;
+    private DataOutputStream output;
+    private ObjectMapper objectMapper;
+
+    /**
+     * Constructs a {@code Client} object and connects to the specified server.
+     *
+     * @param address the server address
+     * @param port    the server port
+     * @throws IOException if an I/O error occurs when creating the socket
+     */
+    public Client(String address, int port) throws IOException {
+        socket = new Socket(address, port);
+        input = new DataInputStream(socket.getInputStream());
+        output = new DataOutputStream(socket.getOutputStream());
+        objectMapper = new ObjectMapper();
     }
 
-    public void stopConnection() throws IOException {
-        in.close();
-        out.close();
-        clientSocket.close();
+    /**
+     * Sends a request to the server.
+     *
+     * @param request the request object to send
+     * @throws IOException if an I/O error occurs when sending the request
+     */
+    public void sendRequest(Object request) throws IOException {
+        String jsonRequest = objectMapper.writeValueAsString(request);
+        output.writeUTF(jsonRequest);
     }
 
-    public static void main(String[] args) {
-        Client client = new Client();
-        try {
-            client.startConnection("127.0.0.1", 4444);
+    /**
+     * Receives a response from the server.
+     *
+     * @param responseType the class type of the response object
+     * @param <T>          the type of the response object
+     * @return the response object received from the server
+     * @throws IOException if an I/O error occurs when receiving the response
+     */
+    public <T> T receiveResponse(Class<T> responseType) throws IOException {
+        String jsonResponse = input.readUTF();
+        return objectMapper.readValue(jsonResponse, responseType);
+    }
 
-            String midiFilePath = MidiUtils.loadMidiFile("/twinkle-twinkle-little-star.mid");
-
-            MidiInterpreter midiInterpreter = new MidiInterpreter();
-            List<MidiInterpreter.NoteEvent> noteEvents = midiInterpreter.parseMidiFile(midiFilePath);
-            ListIterator<MidiInterpreter.NoteEvent> noteIterator = noteEvents.listIterator();
-
-            MidiUtils.playMidiFile(midiFilePath, currentTimeInSeconds -> {
-                while (noteIterator.hasNext()) {
-                    MidiInterpreter.NoteEvent noteEvent = noteIterator.next();
-                    if (noteEvent.timeInSeconds <= currentTimeInSeconds) {
-                        System.out.println(noteEvent);
-                    } else {
-                        noteIterator.previous(); // Move the iterator back if the note is in the future
-                        break;
-                    }
-                }
-            });
-
-            // The client process can stop after the MIDI is done playing
-            client.stopConnection();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    /**
+     * Closes the client connection to the server.
+     *
+     * @throws IOException if an I/O error occurs when closing the socket
+     */
+    public void close() throws IOException {
+        input.close();
+        output.close();
+        socket.close();
     }
 }
