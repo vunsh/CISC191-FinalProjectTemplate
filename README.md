@@ -1,4 +1,4 @@
-# CISC191 Rhythm Game Project
+# CISC191 Architect Assignment 2 ~ JavaHero
 
 ## Overview
 This project is a rhythm game inspired by Guitar Hero, developed for a Computer Science course project. It is currently unfinished as of version 2.0.0 yet is functional and has the ability to theoretically take in any single track MIDI file.
