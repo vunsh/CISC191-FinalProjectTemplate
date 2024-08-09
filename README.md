@@ -56,5 +56,8 @@ The UI module contains the main game logic and user interface, implemented using
 - **Music Playlists**: Manage a playlist of songs, add and remove songs, and save/load the playlist between sessions.
 - **Server-Client Architecture**: The game uses a server-client model to manage connections and game state.
 
+## Custom MIDI Files
+You can upload your own midi files to be used in JavaHero by uploading the .mid file into the `resources` directory in the UI module. Once uploaded, the option to select this file will appear upon hitting "start game" in the JavaFX application.
+
 ## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
